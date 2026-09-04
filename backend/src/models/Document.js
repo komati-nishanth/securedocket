@@ -143,6 +143,24 @@ const documentSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    tamperFlags: [
+      {
+        flaggedAt: {
+          type: Date,
+          default: Date.now,
+        },
+        flaggedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        reason: {
+          type: String,
+          required: true,
+        },
+        expectedHash: String,
+        computedHash: String,
+      },
+    ],
     ocrConfidence: {
       type: Number,
       min: 0,

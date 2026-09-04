@@ -393,32 +393,48 @@ class ExtractionService {
    * Retrieve documents in the Verifier Review Queue
    */
   async getVerificationQueue({ status, priority, documentType, page = 1, limit = 20, search }) {
-    const query = {};
+    const conditions = [];
 
     if (status && status !== 'all') {
-      query.status = status;
+      if (status === 'flagged_tampered' || status === 'tampered') {
+        conditions.push({
+          $or: [{ status: DOCUMENT_STATUS.FLAGGED_TAMPERED }, { isTampered: true }],
+        });
+      } else {
+        conditions.push({ status });
+      }
     } else if (status === 'all') {
-      // no status filter
+      // no status condition
     } else {
-      // Default: show documents that are not yet certified verified, or are flagged
-      query.status = { $in: [DOCUMENT_STATUS.PENDING_REVIEW, DOCUMENT_STATUS.PENDING_OCR, DOCUMENT_STATUS.OCR_COMPLETED, DOCUMENT_STATUS.FLAGGED_TAMPERED] };
+      // Default: show documents needing review or flagged as tampered
+      conditions.push({
+        $or: [
+          { status: { $in: [DOCUMENT_STATUS.PENDING_REVIEW, DOCUMENT_STATUS.PENDING_OCR, DOCUMENT_STATUS.OCR_COMPLETED, DOCUMENT_STATUS.FLAGGED_TAMPERED] } },
+          { isTampered: true },
+        ],
+      });
     }
 
     if (priority) {
-      query['ocrMetadata.reviewPriority'] = priority;
+      conditions.push({ 'ocrMetadata.reviewPriority': priority });
     }
 
     if (documentType) {
-      query.documentType = documentType;
+      conditions.push({ documentType });
     }
 
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { fileName: { $regex: search, $options: 'i' } },
-        { sha256Hash: { $regex: search, $options: 'i' } },
-      ];
+    if (search && search.trim().length > 0) {
+      const s = search.trim();
+      conditions.push({
+        $or: [
+          { title: { $regex: s, $options: 'i' } },
+          { fileName: { $regex: s, $options: 'i' } },
+          { sha256Hash: { $regex: s, $options: 'i' } },
+        ],
+      });
     }
+
+    const query = conditions.length === 1 ? conditions[0] : (conditions.length > 1 ? { $and: conditions } : {});
 
     const pageNum = Math.max(1, parseInt(page, 10));
     const limitNum = Math.max(1, Math.min(100, parseInt(limit, 10)));

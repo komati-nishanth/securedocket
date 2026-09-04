@@ -17,8 +17,8 @@ const validateFieldCorrection = [
     .notEmpty()
     .withMessage('fieldName is required for field correction'),
   body('correctedValue')
-    .notEmpty()
-    .withMessage('correctedValue cannot be empty'),
+    .exists()
+    .withMessage('correctedValue is required'),
   body('reason')
     .optional()
     .trim()

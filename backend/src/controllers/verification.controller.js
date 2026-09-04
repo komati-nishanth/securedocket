@@ -2,6 +2,17 @@ const ApiResponse = require('../utils/apiResponse');
 const ApiError = require('../utils/apiError');
 const extractionService = require('../services/extraction.service');
 const { Document } = require('../models');
+const config = require('../config/env');
+const { decryptDocumentFields } = require('../utils/crypto');
+
+/**
+ * Helper to safely decrypt a mongoose document or plain object
+ */
+function safeDecryptDoc(doc) {
+  if (!doc) return doc;
+  const plainDoc = doc.toObject ? doc.toObject() : doc;
+  return decryptDocumentFields(plainDoc, config.masterEncryptionKey);
+}
 
 /**
  * Controller for Forensic Document Verification, AI Extraction Review, and Human Corrections
@@ -47,9 +58,11 @@ async function getDocumentExtraction(req, res) {
     throw ApiError.notFound('Target evidence document not found');
   }
 
+  const decrypted = safeDecryptDoc(doc);
+
   return ApiResponse.success(res, {
     message: 'Document extraction intelligence retrieved',
-    data: doc,
+    data: decrypted,
   });
 }
 
@@ -61,10 +74,11 @@ async function triggerExtraction(req, res) {
   const { id } = req.params;
 
   const updatedDoc = await extractionService.extractAndProcessDocument(id);
+  const decrypted = safeDecryptDoc(updatedDoc);
 
   return ApiResponse.success(res, {
     message: 'Document OCR and field extraction completed successfully',
-    data: updatedDoc,
+    data: decrypted,
   });
 }
 
@@ -87,9 +101,11 @@ async function updateFieldCorrection(req, res) {
     user: req.user,
   });
 
+  const decrypted = safeDecryptDoc(updatedDoc);
+
   return ApiResponse.success(res, {
     message: `Field '${fieldName}' updated and human correction recorded in audit trail`,
-    data: updatedDoc,
+    data: decrypted,
   });
 }
 
@@ -111,9 +127,11 @@ async function approveField(req, res) {
     user: req.user,
   });
 
+  const decrypted = safeDecryptDoc(updatedDoc);
+
   return ApiResponse.success(res, {
     message: `Field '${fieldName}' approved`,
-    data: updatedDoc,
+    data: decrypted,
   });
 }
 
@@ -131,9 +149,11 @@ async function verifyDocument(req, res) {
     notes,
   });
 
+  const decrypted = safeDecryptDoc(verifiedDoc);
+
   return ApiResponse.success(res, {
     message: 'Document successfully verified and digitally certified by Forensic Verifier',
-    data: verifiedDoc,
+    data: decrypted,
   });
 }
 
@@ -155,9 +175,11 @@ async function flagDocument(req, res) {
     reason,
   });
 
+  const decrypted = safeDecryptDoc(flaggedDoc);
+
   return ApiResponse.success(res, {
     message: 'Document flagged for forensic review / potential tampering',
-    data: flaggedDoc,
+    data: decrypted,
   });
 }
 

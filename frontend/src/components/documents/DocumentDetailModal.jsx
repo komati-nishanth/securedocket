@@ -155,7 +155,19 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
 
   const handleStartFieldEdit = (fieldName, currentVal) => {
     setActiveFieldEdit(fieldName);
-    setEditValue(typeof currentVal === 'string' ? currentVal : JSON.stringify(currentVal));
+    let valToEdit = currentVal;
+    if (typeof currentVal === 'object' && currentVal !== null) {
+      if (currentVal.value !== undefined) {
+        valToEdit = currentVal.value;
+      } else if (currentVal.humanValue !== undefined && currentVal.humanValue !== null) {
+        valToEdit = currentVal.humanValue;
+      } else if (currentVal.aiValue !== undefined) {
+        valToEdit = currentVal.aiValue;
+      } else {
+        valToEdit = JSON.stringify(currentVal);
+      }
+    }
+    setEditValue(valToEdit !== null && valToEdit !== undefined ? String(valToEdit) : '');
   };
 
   const handleSaveFieldCorrection = async (fieldName) => {
@@ -232,6 +244,7 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
       const res = await verificationService.flagDocument(docData._id, flagReason);
       setDocData(res.data);
       setShowFlagModal(false);
+      setFlagReason('');
       setSuccess('Document flagged for forensic anomaly.');
       if (onUpdated) onUpdated(res.data);
     } catch (err) {
