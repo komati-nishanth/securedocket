@@ -55,14 +55,19 @@ export function AuditLogs() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-          <Link2 className="w-5 h-5 text-cyan-400" />
-          Cryptographic Audit Hash Chain
-        </h2>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Immutable, hash-linked cryptographic chain of all document actions, views, and modifications for judicial non-repudiation.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+            <Link2 className="w-5 h-5 text-cyan-400" />
+            Cryptographic Audit Hash Chain
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Immutable, hash-linked cryptographic chain of all document actions, views, and modifications for judicial non-repudiation.
+          </p>
+        </div>
+        <div className="p-2.5 rounded-xl bg-defense-900 border border-slate-800 text-[11px] font-mono text-slate-300">
+          <span className="text-cyan-400 font-bold">Scope:</span> Establishes integrity of records & actions after intake
+        </div>
       </div>
 
       {/* Prominent Verification Status Box */}

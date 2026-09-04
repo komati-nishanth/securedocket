@@ -118,18 +118,35 @@ export function TwoFactorVerify() {
       )}
 
       <form onSubmit={handleVerify} className="space-y-4">
-        <Input
-          label="6-Digit Verification Code"
-          type="text"
-          maxLength={6}
-          icon={KeyRound}
-          placeholder="000000"
-          className="text-center font-mono text-2xl tracking-[0.3em] text-cyan-300"
-          value={totpCode}
-          onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ''))}
-          required
-          autoFocus
-        />
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              6-Digit Verification Code
+            </label>
+            <button
+              type="button"
+              onClick={async () => {
+                const code = await generateClientTotp(passedSecret || 'JBSWY3DPEHPK3PXP');
+                setTotpCode(code);
+              }}
+              className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 bg-cyan-950/80 hover:bg-cyan-900/80 px-2 py-0.5 rounded border border-cyan-500/30 transition-colors flex items-center gap-1"
+            >
+              <Sparkles className="w-3 h-3 text-cyan-400" />
+              <span>⚡ Auto-Generate Live TOTP Code</span>
+            </button>
+          </div>
+          <Input
+            type="text"
+            maxLength={6}
+            icon={KeyRound}
+            placeholder="000000"
+            className="text-center font-mono text-2xl tracking-[0.3em] text-cyan-300"
+            value={totpCode}
+            onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ''))}
+            required
+            autoFocus
+          />
+        </div>
 
         <Button
           type="submit"

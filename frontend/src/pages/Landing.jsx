@@ -54,15 +54,26 @@ export function Landing() {
           </Link>
         </div>
 
+        {/* Honest Scope Disclosure */}
+        <div className="p-4 rounded-2xl bg-defense-900/80 border border-cyan-500/30 max-w-3xl text-left space-y-1">
+          <div className="text-xs font-mono text-cyan-300 font-bold flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+            <span>Core Integrity Guarantee:</span>
+          </div>
+          <p className="text-xs text-slate-300">
+            <strong>"The system establishes integrity of records and actions after intake."</strong> Real-world authenticity before upload is outside the system's verification scope.
+          </p>
+        </div>
+
         {/* Core Architectural Pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 text-left w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 text-left w-full">
           <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-3">
             <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
               <Lock className="w-5 h-5" />
             </div>
             <h3 className="text-base font-bold text-slate-100">SSE-S3 Storage Vault</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Files are encrypted at rest with AES-256 on AWS S3. MongoDB Atlas stores only cryptographic metadata, eliminating database bloat and unauthorized exfiltration risks.
+              Files are encrypted at rest with AES-256 on AWS S3. MongoDB Atlas stores only cryptographic metadata and SHA-256 hashes, eliminating database bloat and raw file exposure.
             </p>
           </div>
 
@@ -72,7 +83,7 @@ export function Landing() {
             </div>
             <h3 className="text-base font-bold text-slate-100">Cryptographic Audit Chain</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Every upload, verification, and view event is bound into an immutable SHA-256 block chain. Any data tampering breaks the chain and triggers immediate security alerts.
+              Pure SHA-256 sequential block ledger (zero blockchain overhead). Every upload, verification, and view event is sealed with <code className="text-cyan-300">previousHash</code> verification.
             </p>
           </div>
 
@@ -82,15 +93,16 @@ export function Landing() {
             </div>
             <h3 className="text-base font-bold text-slate-100">AI OCR & Vector Search</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Automated entity extraction from FIRs and witness statements powered by Google Gemini Vision. Semantic embeddings enable natural-language case cross-referencing.
+              Automated entity extraction from FIRs and statements powered by Google Gemini 2.5 Flash Vision. Semantic embeddings enable cross-referencing across case dossiers.
             </p>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-defense-900/40 py-6 px-6 text-center text-xs font-mono text-slate-400">
-        SIH 26190 Prototype • Built for Defense & Law Enforcement Compliance
+      <footer className="border-t border-slate-800/80 bg-defense-900/40 py-4 px-6 text-center text-xs font-mono text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span>SIH 26190 Demonstration Environment • 100% Synthetic Demo Data</span>
+        <span className="text-amber-400/90 font-semibold">External Law Enforcement Gateways: Mock / Future Integration</span>
       </footer>
     </div>
   );

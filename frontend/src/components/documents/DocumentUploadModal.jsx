@@ -145,6 +145,47 @@ export function DocumentUploadModal({ isOpen, onClose, onUploadSuccess, initialC
     }
   };
 
+  const handleLoadSyntheticFIR = () => {
+    const syntheticContent = `================================================================================
+FIRST INFORMATION REPORT (Under Section 154 Cr.P.C.)
+POLICE STATION: Cyber Crime Police Station (CCPS) - Bengaluru
+DISTRICT: Bengaluru Urban City | STATE: Karnataka
+FIR NO: CCPS/FIR/2026/0891
+DATE & TIME OF REPORT: 14-Aug-2026 10:30 IST
+
+1. ACTS & SECTIONS APPLICABLE:
+   (a) Information Technology Act, 2000: Section 66C (Identity Theft), Section 66D (Cheating by Impersonation)
+   (b) Indian Penal Code (IPC): Section 420 (Cheating), Section 468 (Forgery for Cheating), Section 471 (Using Forged Document)
+
+2. OCCURRENCE OF OFFENCE:
+   (a) Day/Date: Tuesday, 12-Aug-2026 at approx. 14:30 IST
+   (b) Place of Occurrence: Apex Financial Services Hub, 4th Block, Koramangala, Bengaluru
+
+3. COMPLAINANT / INFORMANT DETAILS:
+   (a) Name: Ananya Rameshwaram (Chief Compliance Officer)
+   (b) Organization: Apex FinCorp Micro-Lending Ltd.
+   (c) Address: Residency Road, Bengaluru - 560025
+
+4. DETAILS OF KNOWN / SUSPECTED / ACCUSED PERSONS:
+   (a) Name: Sameer Rohan Verma
+   (b) Designation: Former Senior Cloud Infrastructure Engineer (Terminated)
+   (c) Known Alias: 'SamV-Root'
+
+5. BRIEF STATEMENT OF FACTS / OFFENCE:
+   On 12-Aug-2026 between 14:15 and 14:45 IST, an unauthorized administrator session was established from external IP 198.51.100.44 using compromised 2FA master tokens belonging to senior management. The actor executed privilege escalation scripts, initiating four unauthorized wire disbursements totaling INR 4,20,00,000 (Four Crores Twenty Lakhs) to offshore synthetic accounts.
+
+[DEMO EVIDENCE RECORD - 100% SYNTHETIC DATA FOR SIH 26190 EVALUATION]
+================================================================================`;
+
+    const blob = new Blob([syntheticContent], { type: 'text/plain' });
+    const syntheticFile = new File([blob], 'SYNTHETIC_FIR_CCPS_2026_0891.txt', { type: 'text/plain' });
+
+    setDocumentType('FIR');
+    setTitle('Synthetic FIR: Unauthorized Token Escalation');
+    setDescription('Fictional FIR document for SIH 26190 demonstration purposes [DEMO DATA - NOT REAL PII]');
+    handleFileSelect(syntheticFile);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -298,9 +339,19 @@ export function DocumentUploadModal({ isOpen, onClose, onUploadSuccess, initialC
 
           {/* Drag & Drop File Zone */}
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5 block">
-              Document File (PDF, PNG, JPG, TIFF, DOCX, TXT) <span className="text-rose-400">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block">
+                Document File (PDF, PNG, JPG, TIFF, DOCX, TXT) <span className="text-rose-400">*</span>
+              </label>
+              <button
+                type="button"
+                onClick={handleLoadSyntheticFIR}
+                disabled={uploading}
+                className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 px-2 py-0.5 rounded border border-cyan-500/40 transition-colors flex items-center gap-1"
+              >
+                <span>⚡ Load Fictional FIR Sample</span>
+              </button>
+            </div>
 
             <input
               type="file"

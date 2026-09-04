@@ -127,7 +127,7 @@ export function VerificationQueue() {
       <div className="p-3.5 rounded-xl bg-defense-900/60 border border-amber-500/30 text-xs text-slate-300 flex items-center gap-3">
         <Info className="w-4 h-4 text-amber-400 shrink-0" />
         <div>
-          <span className="font-semibold text-amber-300">Standard Operating Protocol:</span> AI extraction confidence reflects text fidelity and does not imply real-world legal authenticity. Verification sign-off stamps are digitally signed and recorded in the audit hash chain.
+          <span className="font-semibold text-amber-300">Intake Integrity Protocol:</span> The system establishes integrity of records and actions after intake. Real-world authenticity before upload is outside the system's verification scope. Forensic verifier corrections seal immutable v2 revisions and are recorded in the cryptographic audit hash chain.
         </div>
       </div>
 

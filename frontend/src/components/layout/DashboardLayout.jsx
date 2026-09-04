@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
+import { JudgeDemoGuide } from '../demo/JudgeDemoGuide';
 
 export function DashboardLayout() {
   return (
@@ -16,7 +17,9 @@ export function DashboardLayout() {
           </div>
         </main>
       </div>
+      <JudgeDemoGuide />
       <Footer />
     </div>
   );
 }
+

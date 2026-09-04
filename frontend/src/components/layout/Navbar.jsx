@@ -16,11 +16,17 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 flex flex-col border-b border-slate-800/80 bg-defense-950/95 backdrop-blur-md">
       {/* High-Security GovTech Classification Banner */}
-      <div className="w-full bg-gradient-to-r from-blue-950 via-slate-900 to-blue-950 py-1 px-4 border-b border-cyan-500/20 text-center flex items-center justify-center gap-2">
-        <Lock className="w-3 h-3 text-cyan-400" />
-        <span className="text-[10px] font-mono tracking-widest uppercase font-semibold text-cyan-300">
-          RESTRICTED — OFFICIAL LAW ENFORCEMENT & JUDICIAL INVESTIGATION VAULT
-        </span>
+      <div className="w-full bg-gradient-to-r from-blue-950 via-slate-900 to-blue-950 py-1 px-4 border-b border-cyan-500/20 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Lock className="w-3 h-3 text-cyan-400" />
+          <span className="text-[10px] font-mono tracking-widest uppercase font-semibold text-cyan-300">
+            OFFICIAL LAW ENFORCEMENT & JUDICIAL INTEGRITY VAULT
+          </span>
+        </div>
+        <div className="text-[10px] font-mono text-cyan-400 font-bold flex items-center gap-1.5 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-500/30">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span>SIH-26190 EVALUATION MODE</span>
+        </div>
       </div>
 
       {/* Main App Bar */}

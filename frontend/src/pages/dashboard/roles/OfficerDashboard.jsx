@@ -110,6 +110,24 @@ export function OfficerDashboard({ user }) {
         </div>
       </div>
 
+      {/* SIH Demonstration Experience Hub */}
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-defense-900 to-indigo-950/40 border border-cyan-500/30 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+            <span className="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wider">
+              SIH-26190 Judge Evaluation Scenario: "Operation Phantom Vault"
+            </span>
+          </div>
+          <span className="text-[10px] font-mono text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
+            External Gateways: Mock / Future Integration
+          </span>
+        </div>
+        <p className="text-xs text-slate-300">
+          <strong>"The system establishes integrity of records and actions after intake."</strong> Follow the 19-step guided walkthrough below or use the floating <strong>SIH Judge Demo Guide</strong> in the bottom-right corner to test evidence upload, SHA-256 pre-hashing, OCR confidence scoring, human-in-the-loop review, and immutable hash-chain validation.
+        </p>
+      </div>
+
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, i) => {
