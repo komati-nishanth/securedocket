@@ -68,7 +68,16 @@ async function seedDemoData() {
 
   // Clean existing demo records
   await User.deleteMany({ email: { $in: DEMO_USERS.map((u) => u.email) } });
+  const existingDemoCases = await Case.find({ caseNumber: { $regex: /^DEMO/ } });
+  const demoCaseIds = existingDemoCases.map((c) => c._id);
+  await Document.deleteMany({
+    $or: [
+      { caseId: { $in: demoCaseIds } },
+      { s3Key: { $regex: /^cases\/DEMO/ } },
+    ],
+  });
   await Case.deleteMany({ caseNumber: { $regex: /^DEMO/ } });
+  await AuditLog.deleteMany({});
   await RefreshToken.deleteMany({});
 
   // 1. Create Demo Users
