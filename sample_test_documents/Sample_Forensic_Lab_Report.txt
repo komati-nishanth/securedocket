@@ -1,0 +1,33 @@
+CENTRAL FORENSIC SCIENCE LABORATORY (CFSL)
+DIRECTORATE OF FORENSIC SCIENCE SERVICES - GOVT. OF INDIA
+DIGITAL FORENSICS DIVISION
+--------------------------------------------------------------------------------
+Forensic Report Number: CFSL/BLR/DF-2026/0419
+Date of Dispatch: 20-August-2026
+Reference Crime No: CCPS/CR/2026/0891
+Forwarded By: Station House Officer, Cyber Crime Police Station, Bengaluru
+
+Item Received for Examination:
+1. Parcel 'A': One (1) SanDisk Extreme Pro 1TB NVMe Solid State Drive (Serial No: 2408X-7719B)
+2. Parcel 'B': One (1) BitLocker Encrypted Memory Dump Image File (MD5: e4d909c290d0fb1ca068ffaddf22cbd0)
+
+Forensic Laboratory Examination & Methodology:
+- Physical Examination: Seals found intact matching the specimen impression of CCPS seal.
+- Write-Blocked Bit-Stream Imaging: Bit-by-bit physical forensic image created using Tableau Forensic PCIe Bridge T7u.
+- Cryptographic Hashes:
+  * Original Drive SHA-256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+  * Forensic Image SHA-256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069 (100% Verification Match)
+
+Forensic Findings & Extraction Analysis:
+1. File Carving revealed a deleted Python script titled `token_bypass_inject.py` located in unallocated clusters.
+2. The script contained embedded credentials and hardcoded webhook endpoints directing funds to offshore crypto wallet `0x71C...49A1`.
+3. Event log analysis of `Security.evtx` confirmed deliberate execution of `mimikatz` utility on 08-Aug-2026 at 02:14:22 UTC.
+4. Browser history and Tor browser artifacts confirmed communication with dark web relay nodes between 02-Aug-2026 and 12-Aug-2026.
+
+Conclusion & Expert Opinion:
+The physical evidence exhibits definitive proof of unauthorized cryptographic key exfiltration, malware staging, and credential manipulation. The digital artifacts directly correspond to suspect user profile 'verma_s'.
+--------------------------------------------------------------------------------
+Examined By:
+Dr. Aruna Sundaram, Ph.D.
+Senior Scientific Officer (Cyber Forensics & AI), CFSL Bengaluru
+Seal: [CENTRAL FORENSIC SCIENCE LABORATORY - DIGITAL DIVISION]

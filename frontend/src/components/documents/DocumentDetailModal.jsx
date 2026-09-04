@@ -175,10 +175,11 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
       setActionLoading(true);
       setError(null);
       const res = await verificationService.correctField(docData._id, fieldName, editValue);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setActiveFieldEdit(null);
       setSuccess(`Field '${fieldName}' updated with non-destructive verifier correction.`);
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setError(err.response?.data?.error?.message || err.message);
     } finally {
@@ -191,9 +192,10 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
       setActionLoading(true);
       setError(null);
       const res = await verificationService.approveField(docData._id, fieldName);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setSuccess(`Field '${fieldName}' certified as approved.`);
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setError(err.response?.data?.error?.message || err.message);
     } finally {
@@ -206,9 +208,10 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
       setActionLoading(true);
       setError(null);
       const res = await verificationService.triggerExtraction(docData._id);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setSuccess('AI OCR and document classification pipeline completed.');
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setError(err.response?.data?.error?.message || err.message);
     } finally {
@@ -221,10 +224,11 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
       setActionLoading(true);
       setError(null);
       const res = await verificationService.verifyDocument(docData._id, verifyNotes);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setShowVerifyConfirm(false);
       setSuccess('Document successfully certified and verified by Forensic Verifier.');
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setError(err.response?.data?.error?.message || err.message);
     } finally {
@@ -242,11 +246,12 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
       setActionLoading(true);
       setError(null);
       const res = await verificationService.flagDocument(docData._id, flagReason);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setShowFlagModal(false);
       setFlagReason('');
       setSuccess('Document flagged for forensic anomaly.');
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setError(err.response?.data?.error?.message || err.message);
     } finally {

@@ -41,7 +41,8 @@ export function VerificationQueue() {
         documentType: typeFilter || undefined,
         search: search || undefined,
       });
-      setDocuments(res.data || []);
+      const docs = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
+      setDocuments(docs);
     } catch (err) {
       console.error('Failed to load verification queue:', err);
     } finally {

@@ -238,24 +238,53 @@ class ExtractionService {
       correctedAt: new Date(),
     });
 
-    doc.markModified('extractedFields');
-    await doc.save();
+    // Advance document version and append immutable version history record
+    const nextVersion = (doc.version || 1) + 1;
+    doc.version = nextVersion;
 
-    await recordAuditEntry({
+    const auditRecord = await recordAuditEntry({
       userId: user.id,
       documentId: doc._id,
       caseId: doc.caseId?._id || doc.caseId,
       action: AUDIT_ACTIONS.DOCUMENT_FIELD_CORRECT,
       details: {
+        versionNumber: nextVersion,
         fieldName,
         originalAiValue: aiOriginalValue,
         previousValue,
         correctedValue,
         correctedByRole: user.role,
+        correctedByBadge: user.badgeNumber || user.name,
       },
     });
 
-    logger.info(`[Field Correction] Field '${fieldName}' corrected for doc ${doc._id} by ${user.role} ${user.id}`);
+    const versionRecord = {
+      versionNumber: nextVersion,
+      version: nextVersion,
+      s3Key: doc.s3Key,
+      sha256Hash: doc.sha256Hash,
+      fileSize: doc.fileSize,
+      mimeType: doc.mimeType,
+      uploadedBy: user.id,
+      editedBy: user.id,
+      createdAt: new Date(),
+      uploadedAt: new Date(),
+      changeDescription: `Field correction: '${fieldName}' amended by ${user.role}`,
+      changeNotes: `Field correction: '${fieldName}' amended by ${user.role}`,
+      extractedFields: JSON.parse(JSON.stringify(doc.extractedFields)),
+      auditLogId: auditRecord ? auditRecord._id : null,
+    };
+
+    if (!Array.isArray(doc.versions)) {
+      doc.versions = [];
+    }
+    doc.versions.push(versionRecord);
+
+    doc.markModified('extractedFields');
+    doc.markModified('versions');
+    await doc.save();
+
+    logger.info(`[Field Correction] Field '${fieldName}' corrected for doc ${doc._id}. Created new version v${nextVersion} by ${user.role} ${user.id}`);
 
     return doc;
   }

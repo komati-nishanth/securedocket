@@ -101,10 +101,11 @@ export function DocumentReviewModal({ isOpen, onClose, document, onUpdated, user
       setActionLoading(true);
       setErrorMsg(null);
       const res = await verificationService.correctField(docData._id, fieldName, editValue);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setActiveFieldEdit(null);
       setSuccessMsg(`Field '${fieldName}' successfully updated with human verification correction.`);
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setErrorMsg(err.response?.data?.error?.message || err.message);
     } finally {
@@ -117,9 +118,10 @@ export function DocumentReviewModal({ isOpen, onClose, document, onUpdated, user
       setActionLoading(true);
       setErrorMsg(null);
       const res = await verificationService.approveField(docData._id, fieldName);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setSuccessMsg(`Field '${fieldName}' certified and locked as approved.`);
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setErrorMsg(err.response?.data?.error?.message || err.message);
     } finally {
@@ -132,9 +134,10 @@ export function DocumentReviewModal({ isOpen, onClose, document, onUpdated, user
       setActionLoading(true);
       setErrorMsg(null);
       const res = await verificationService.triggerExtraction(docData._id);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setSuccessMsg('AI OCR and document classification re-processed successfully.');
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setErrorMsg(err.response?.data?.error?.message || err.message);
     } finally {
@@ -147,10 +150,11 @@ export function DocumentReviewModal({ isOpen, onClose, document, onUpdated, user
       setActionLoading(true);
       setErrorMsg(null);
       const res = await verificationService.verifyDocument(docData._id, verifyNotes);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setShowVerifyConfirm(false);
       setSuccessMsg('Document successfully verified and digitally certified in the forensic ledger.');
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setErrorMsg(err.response?.data?.error?.message || err.message);
     } finally {
@@ -168,10 +172,11 @@ export function DocumentReviewModal({ isOpen, onClose, document, onUpdated, user
       setActionLoading(true);
       setErrorMsg(null);
       const res = await verificationService.flagDocument(docData._id, flagReason);
-      setDocData(res.data);
+      const updatedDoc = res.data || res;
+      setDocData(updatedDoc);
       setShowFlagModal(false);
       setSuccessMsg('Document flagged for forensic integrity anomaly.');
-      if (onUpdated) onUpdated(res.data);
+      if (onUpdated) onUpdated(updatedDoc);
     } catch (err) {
       setErrorMsg(err.response?.data?.error?.message || err.message);
     } finally {

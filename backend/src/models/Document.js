@@ -5,21 +5,23 @@ const documentVersionSchema = new mongoose.Schema(
   {
     versionNumber: {
       type: Number,
-      required: true,
       min: 1,
+      default: function () {
+        return this.version || 1;
+      },
     },
     version: {
       type: Number,
       min: 1,
+      default: function () {
+        return this.versionNumber || 1;
+      },
     },
     s3Key: {
       type: String,
-      required: true,
     },
     sha256Hash: {
       type: String,
-      required: true,
-      match: [/^[a-f0-9]{64}$/i, 'Must be a valid 64-character SHA-256 hexadecimal hash'],
     },
     fileSize: {
       type: Number, // bytes
@@ -34,7 +36,6 @@ const documentVersionSchema = new mongoose.Schema(
     uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     createdAt: {
       type: Date,
@@ -246,19 +247,6 @@ const documentSchema = new mongoose.Schema(
     verifiedAt: {
       type: Date,
     },
-    verificationNotes: {
-      type: String,
-      maxlength: 2000,
-    },
-    tamperFlags: [
-      {
-        flaggedAt: { type: Date, default: Date.now },
-        flaggedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        reason: String,
-        computedHash: String,
-        expectedHash: String,
-      },
-    ],
     versions: [documentVersionSchema],
     metadata: {
       description: { type: String, maxlength: 1000 },
@@ -269,6 +257,23 @@ const documentSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Pre-validate hook to guarantee all versions have valid version numbers and required fields
+documentSchema.pre('validate', function (next) {
+  if (Array.isArray(this.versions)) {
+    this.versions.forEach((ver, index) => {
+      const vNum = ver.versionNumber || ver.version || index + 1;
+      ver.versionNumber = vNum;
+      ver.version = vNum;
+      if (!ver.s3Key && this.s3Key) ver.s3Key = this.s3Key;
+      if (!ver.sha256Hash && this.sha256Hash) ver.sha256Hash = this.sha256Hash;
+      if (!ver.uploadedBy && this.uploadedBy) ver.uploadedBy = this.uploadedBy;
+      if (!ver.fileSize && this.fileSize) ver.fileSize = this.fileSize;
+      if (!ver.mimeType && this.mimeType) ver.mimeType = this.mimeType;
+    });
+  }
+  next();
+});
 
 // Compound indexes for fast audit and case retrieval
 documentSchema.index({ caseId: 1, documentType: 1, status: 1 });

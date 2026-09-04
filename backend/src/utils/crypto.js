@@ -93,19 +93,25 @@ function decryptAES256GCM(encryptedData, masterKeyHex) {
  */
 function decryptDocumentFields(doc, masterKeyHex) {
   if (!doc || !doc.extractedFields) return doc;
-  
+
   for (const [key, fieldObj] of Object.entries(doc.extractedFields)) {
-    if (fieldObj && fieldObj.isEncrypted) {
-      if (fieldObj.aiValue && fieldObj.aiValue.ciphertext) {
-        fieldObj.aiValue = decryptAES256GCM(fieldObj.aiValue, masterKeyHex);
+    if (fieldObj && typeof fieldObj === 'object') {
+      try {
+        if (fieldObj.isEncrypted) {
+          if (fieldObj.aiValue && typeof fieldObj.aiValue === 'object' && fieldObj.aiValue.ciphertext) {
+            fieldObj.aiValue = decryptAES256GCM(fieldObj.aiValue, masterKeyHex);
+          }
+          if (fieldObj.humanValue && typeof fieldObj.humanValue === 'object' && fieldObj.humanValue.ciphertext) {
+            fieldObj.humanValue = decryptAES256GCM(fieldObj.humanValue, masterKeyHex);
+          }
+          if (fieldObj.value && typeof fieldObj.value === 'object' && fieldObj.value.ciphertext) {
+            fieldObj.value = decryptAES256GCM(fieldObj.value, masterKeyHex);
+          }
+          fieldObj.isEncrypted = false;
+        }
+      } catch (err) {
+        // preserve field as-is if decryption fails
       }
-      if (fieldObj.humanValue && fieldObj.humanValue.ciphertext) {
-        fieldObj.humanValue = decryptAES256GCM(fieldObj.humanValue, masterKeyHex);
-      }
-      if (fieldObj.value && fieldObj.value.ciphertext) {
-        fieldObj.value = decryptAES256GCM(fieldObj.value, masterKeyHex);
-      }
-      fieldObj.isEncrypted = false;
     }
   }
   return doc;

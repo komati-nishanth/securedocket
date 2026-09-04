@@ -1,0 +1,28 @@
+STATEMENT OF WITNESS RECORDED UNDER SECTION 161 Cr.P.C.
+POLICE DEPARTMENT - CRIME INVESTIGATION DIVISION
+--------------------------------------------------------------------------------
+Case Reference / Crime No: CCPS/CR/2026/0891
+Police Station: Cyber Crime Police Station, Bengaluru
+
+Date of Examination: 16-August-2026
+Place of Recording: Office of Cyber Crime Branch, Infantry Road, Bengaluru
+
+Witness Personal Particulars:
+- Name of Witness: Dr. Vikramaditya Sen
+- Father's Name: Prof. Aloknath Sen
+- Age: 42 Years | Gender: Male
+- Occupation: Principal Security Architect, CyberFort Defense Systems Ltd.
+- Residential Address: #742, 12th Main Road, Indiranagar 2nd Stage, Bengaluru - 560038
+- Mobile Phone: +91-9123456789
+
+Statement Text:
+"I state that on 12-August-2026 at approximately 16:45 hours, I received an emergency escalation call from the Chief Compliance Officer regarding unusual API anomalies on the primary core banking switch. Upon performing packet inspection on the production bastion logs, I observed multiple concurrent sessions originating from an internal workstation allocated to Sameer Verma. 
+
+I personally reviewed the cryptographic keystore and found that the master access token had been extracted using a modified memory scraping script at 02:14 AM on 08-August-2026. Sameer Verma was physically present in the server room during this timestamp as verified by the RFID biometric badge access logs. 
+
+When I confronted Mr. Verma regarding the anomaly on the morning of 13-August-2026, he appeared visibly nervous and abruptly left the facility claiming a medical emergency. I have preserved the forensic memory dump (MD5: e4d909c290d0fb1ca068ffaddf22cbd0) and submitted the encrypted thumb drive to Inspector Devendra Rao."
+
+I have read over the above statement and confirm it is an accurate and truthful record of what I witnessed.
+--------------------------------------------------------------------------------
+Recorded By: Inspector Devendra Rao (Badge #CCB-5542)
+Witness Signature: Dr. Vikramaditya Sen

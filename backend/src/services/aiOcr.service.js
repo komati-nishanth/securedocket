@@ -62,6 +62,26 @@ class AiOcrService {
   }
 
   /**
+   * Helper to extract text from a PDF buffer using pdf-parse v1/v2 compatibility
+   */
+  async _extractPdfText(fileBuffer) {
+    try {
+      if (typeof pdfParse === 'function') {
+        const data = await pdfParse(fileBuffer);
+        return data && data.text ? data.text : '';
+      }
+      if (pdfParse && pdfParse.PDFParse) {
+        const parser = new pdfParse.PDFParse({ data: fileBuffer });
+        const res = await parser.getText();
+        return res && res.text ? res.text : '';
+      }
+    } catch (err) {
+      logger.debug(`[AI OCR] PDF parsing fallback: ${err.message}`);
+    }
+    return '';
+  }
+
+  /**
    * Primary Engine: Gemini Vision / Multimodal API with Timeout and Retry
    */
   async _processWithGeminiRetry({ fileBuffer, mimeType, fileName, documentTypeHint }, maxRetries = 2) {
@@ -112,9 +132,17 @@ Document Type Hint: ${documentTypeHint || 'Unspecified'}
 Filename: ${fileName}
 Strictly return valid JSON only.`;
 
-        // Format parts based on MIME type
+        // Format parts based on MIME type and text availability
         const parts = [];
-        if (mimeType.includes('pdf') || mimeType.includes('image')) {
+        let extractedPdfText = '';
+
+        if (mimeType.includes('pdf') || (fileName && fileName.toLowerCase().endsWith('.pdf'))) {
+          extractedPdfText = await this._extractPdfText(fileBuffer);
+        }
+
+        if (extractedPdfText && extractedPdfText.trim().length > 20) {
+          parts.push({ text: `Document Content:\n${extractedPdfText.trim()}` });
+        } else if (mimeType.includes('pdf') || mimeType.includes('image')) {
           parts.push({
             inlineData: {
               data: fileBuffer.toString('base64'),
@@ -127,9 +155,9 @@ Strictly return valid JSON only.`;
         }
         parts.push({ text: prompt });
 
-        // Execute with 15s timeout
+        // Execute with 45s timeout
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Gemini API timeout exceeded (15s)')), 15000)
+          setTimeout(() => reject(new Error('Gemini API timeout exceeded (45s)')), 45000)
         );
 
         const resultPromise = model.generateContent(parts);
@@ -160,13 +188,9 @@ Strictly return valid JSON only.`;
     // 1. Extract raw text from PDF/Text buffer
     try {
       if (mimeType === 'application/pdf' || (fileName && fileName.toLowerCase().endsWith('.pdf'))) {
-        const pdfData = await pdfParse(fileBuffer);
-        if (pdfData && pdfData.text && pdfData.text.trim().length > 0) {
-          extractedText = pdfData.text;
-        } else {
-          extractedText = fileBuffer.toString('utf8');
-        }
-      } else {
+        extractedText = await this._extractPdfText(fileBuffer);
+      }
+      if (!extractedText || extractedText.trim().length === 0) {
         extractedText = fileBuffer.toString('utf8');
       }
     } catch (err) {

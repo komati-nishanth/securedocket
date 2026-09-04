@@ -39,6 +39,7 @@ tmp/
 temp/
 *.tmp
 *.pdf
+!sample_test_documents/*.pdf
 *.png
 *.jpg
 *.jpeg

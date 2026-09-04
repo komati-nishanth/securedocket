@@ -1,0 +1,39 @@
+CENTRAL CRIME BRANCH - POLICE DEPARTMENT
+FIRST INFORMATION REPORT
+(Under Section 154 Cr.P.C.)
+--------------------------------------------------------------------------------
+1. District: Bengaluru City
+   Police Station: Cyber Crime Police Station (CCPS)
+   State: Karnataka
+
+2. FIR Number: CCPS/FIR/2026/0891
+   Date & Time of FIR: 14-Aug-2026 10:15 IST
+
+3. Acts & Sections:
+   - Indian Penal Code 1860: Section 420 (Cheating), Section 468 (Forgery for Purpose of Cheating), Section 471 (Using Forged Document as Genuine)
+   - Information Technology Act 2000: Section 66C (Identity Theft), Section 66D (Cheating by Impersonation via Computer Resource)
+
+4. Occurrence of Offence:
+   - Date & Time: Between 01-Aug-2026 09:00 IST and 12-Aug-2026 18:00 IST
+   - Place of Occurrence: Apex Financial Hub, 4th Block, Koramangala, Bengaluru, Karnataka - 560034
+
+5. Complainant / Informant Details:
+   - Full Name: Ananya Rameshwaram
+   - Designation: Chief Compliance Officer, Bharat Microfinance Ltd.
+   - Address: 104, Prestige Tech Park, Marathahalli-Sarjapur Outer Ring Road, Bengaluru - 560103
+   - Contact Number: +91-9876543210
+   - Identification: Official Employee ID CCO-88219
+
+6. Details of Known / Suspected Accused:
+   - Accused 1: Sameer Rohan Verma (Former Systems Administrator)
+   - Accused 2: Deepa Krishnan (External Contractor, Cloud Ops)
+   - Accused 3: Unknown international IP handlers (89.207.132.170, 185.220.101.5)
+
+7. Brief Facts & Description of Offence:
+   On 13-Aug-2026, internal security telemetry flagged an unauthorized privilege escalation on the central credit disbursement database. An internal audit revealed that 48 fraudulent loan accounts were created using synthetic identity records and manipulated Aadhaar hashes. Total unauthorized capital diversion is quantified at INR 4,20,00,000 (Four Crores Twenty Lakhs). Suspect Sameer Verma submitted forged managerial approval tokens to bypass 2FA authentication safeguards.
+
+8. Action Taken:
+   FIR registered under above sections. Case handed over to Inspector Devendra Rao for immediate forensic docketing and asset freezing.
+--------------------------------------------------------------------------------
+Investigating Officer: Inspector Devendra Rao, Badge: CCB-5542
+Signature of Recording Officer: [Digitally Recorded]

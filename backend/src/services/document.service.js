@@ -86,6 +86,7 @@ class DocumentService {
       version: 1,
       versions: [
         {
+          versionNumber: 1,
           version: 1,
           s3Key,
           sha256Hash,
@@ -93,6 +94,8 @@ class DocumentService {
           mimeType: fileValidation.mimeType,
           uploadedBy: user.id,
           uploadedAt: new Date(),
+          createdAt: new Date(),
+          changeDescription: 'Initial secure ingestion',
           changeNotes: 'Initial secure ingestion',
         },
       ],
@@ -579,6 +582,7 @@ class DocumentService {
       editedBy: targetVersion.editedBy || targetVersion.uploadedBy,
       createdAt: targetVersion.createdAt || targetVersion.uploadedAt,
       changeDescription: targetVersion.changeDescription || targetVersion.changeNotes,
+      extractedFields: targetVersion.extractedFields || doc.extractedFields || {},
       auditLog: targetVersion.auditLogId,
       isCurrent: (doc.version || 1) === (targetVersion.versionNumber || targetVersion.version),
     };
@@ -628,6 +632,24 @@ class DocumentService {
     const vA = await this.getDocumentVersion(documentId, versionA, user);
     const vB = await this.getDocumentVersion(documentId, versionB, user);
 
+    const fieldsA = vA.extractedFields || {};
+    const fieldsB = vB.extractedFields || {};
+    const allFieldKeys = Array.from(new Set([...Object.keys(fieldsA), ...Object.keys(fieldsB)]));
+    const fieldChanges = [];
+
+    for (const key of allFieldKeys) {
+      const valA = fieldsA[key]?.value !== undefined ? fieldsA[key]?.value : (fieldsA[key]?.humanValue || fieldsA[key]?.aiValue);
+      const valB = fieldsB[key]?.value !== undefined ? fieldsB[key]?.value : (fieldsB[key]?.humanValue || fieldsB[key]?.aiValue);
+      if (valA !== valB) {
+        fieldChanges.push({
+          field: key,
+          from: valA !== undefined ? valA : 'N/A',
+          to: valB !== undefined ? valB : 'N/A',
+          isCorrected: !!fieldsB[key]?.isCorrected,
+        });
+      }
+    }
+
     return {
       documentId,
       versionA: {
@@ -637,6 +659,7 @@ class DocumentService {
         editedBy: vA.editedBy,
         createdAt: vA.createdAt,
         changeDescription: vA.changeDescription,
+        extractedFields: vA.extractedFields,
       },
       versionB: {
         versionNumber: vB.versionNumber,
@@ -645,6 +668,7 @@ class DocumentService {
         editedBy: vB.editedBy,
         createdAt: vB.createdAt,
         changeDescription: vB.changeDescription,
+        extractedFields: vB.extractedFields,
       },
       diff: {
         hashChanged: vA.sha256Hash !== vB.sha256Hash,
@@ -653,6 +677,7 @@ class DocumentService {
           (new Date(vB.createdAt).getTime() - new Date(vA.createdAt).getTime()) / 1000
         ),
         editorChanged: vA.editedBy?._id?.toString() !== vB.editedBy?._id?.toString(),
+        fieldChanges,
       },
     };
   }
