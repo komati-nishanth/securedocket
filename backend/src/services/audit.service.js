@@ -122,7 +122,24 @@ async function verifyAuditChainIntegrity(limit = 1000) {
   };
 }
 
+/**
+ * Validates the audit chain and returns normalized boolean & diagnostic metadata
+ */
+async function validateAuditChain(limit = 1000) {
+  const result = await verifyAuditChainIntegrity(limit);
+  return {
+    isValid: result.valid,
+    valid: result.valid,
+    totalRecords: result.checkedEntries || 0,
+    checkedEntries: result.checkedEntries || 0,
+    compromisedIndices: result.valid ? [] : (result.brokenIndex !== undefined ? [result.brokenIndex] : [0]),
+    firstBrokenEntry: result.firstBrokenEntry || null,
+    reason: result.reason || null,
+  };
+}
+
 module.exports = {
   recordAuditEntry,
   verifyAuditChainIntegrity,
+  validateAuditChain,
 };

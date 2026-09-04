@@ -7,8 +7,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "seed": "node src/scripts/seedUsers.js",
+    "seed:demo": "node src/scripts/seedDemoData.js",
     "lint": "eslint src/",
-    "test": "jest tests/"
+    "test": "jest tests/ --runInBand"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1123.0",

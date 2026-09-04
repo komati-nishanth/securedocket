@@ -129,6 +129,16 @@ class DocumentService {
   }
 
   /**
+   * Upload Document Alias for Ingestion
+   */
+  async uploadDocument(metadata, file, user) {
+    if (file && user) {
+      return this.ingestDocument({ ...metadata, file, user });
+    }
+    return this.ingestDocument(metadata);
+  }
+
+  /**
    * List vaulted documents with role-based scoping
    */
   async listDocuments({ caseId, documentType, status, page = 1, limit = 20, search }, user) {
@@ -236,14 +246,27 @@ class DocumentService {
    * Generate 5-Minute Presigned S3 Access URL
    * Enforces clearance check & returns temporary access token
    */
-  async generatePresignedViewUrl(documentId, user, expiresInSeconds = 300, disposition = 'inline') {
+  async generatePresignedViewUrl(documentIdOrOptions, maybeUser, expiresInSeconds = 300, disposition = 'inline') {
+    let documentId, user, expires, disp;
+    if (typeof documentIdOrOptions === 'object' && documentIdOrOptions !== null && documentIdOrOptions.documentId) {
+      documentId = documentIdOrOptions.documentId;
+      user = documentIdOrOptions.user;
+      expires = documentIdOrOptions.expiresInSeconds || 300;
+      disp = documentIdOrOptions.disposition || 'inline';
+    } else {
+      documentId = documentIdOrOptions;
+      user = maybeUser;
+      expires = expiresInSeconds;
+      disp = disposition;
+    }
+
     const doc = await this.getDocumentById(documentId, user);
 
     const presignedData = await s3Service.getPresignedDownloadUrl(
       doc.s3Key,
-      expiresInSeconds,
+      expires,
       doc._id.toString(),
-      disposition
+      disp
     );
 
     // Record audit entry

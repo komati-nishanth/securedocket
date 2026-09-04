@@ -12,6 +12,10 @@ class VectorService {
     this.modelName = 'gemini-embedding-001';
   }
 
+  cosineSimilarity(vecA, vecB) {
+    return this.calculateCosineSimilarity(vecA, vecB);
+  }
+
   /**
    * Calculate Cosine Similarity between two numerical vectors
    * @param {number[]} vecA

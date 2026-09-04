@@ -1,7 +1,7 @@
 const Document = require('../models/Document');
 const { Case } = require('../models/Case');
 const vectorService = require('./vector.service');
-const { ApiError } = require('../utils/ApiError');
+const ApiError = require('../utils/apiError');
 const { HTTP_STATUS, ERROR_CODES } = require('../constants/statusCodes');
 const { ROLES } = require('../constants/roles');
 const logger = require('../config/logger');
@@ -11,12 +11,18 @@ class SearchService {
    * Perform a semantic search across documents using cosine similarity.
    * Enforces role-based access control.
    */
-  async semanticSearch({ query, caseIdFilter, user }) {
+  async semanticSearch(options = {}, userParam = null) {
+    const query = typeof options === 'string' ? options : (options.query || '');
+    const caseIdFilter = options.caseIdFilter || options.caseId || null;
+    const threshold = typeof options.threshold === 'number' ? options.threshold : 0.15;
+    const user = userParam || options.user || {};
+
     if (!query || query.trim() === '') {
       throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Search query is required', ERROR_CODES.VALIDATION_ERROR);
     }
 
-    logger.info(`[Search Service] User ${user._id} searching for: "${query}"`);
+    const userId = user._id ? user._id.toString() : (user.id ? user.id.toString() : 'anonymous');
+    logger.info(`[Search Service] User ${userId} searching for: "${query}"`);
 
     // 1. Generate Query Embedding
     const queryEmbedding = await vectorService.generateEmbedding(query);
@@ -32,7 +38,6 @@ class SearchService {
 
     if (user.role === ROLES.OFFICER) {
       // Officers can only search within cases assigned to them (as lead or assigned officer)
-      const userId = user._id ? user._id.toString() : user.id;
       const assignedCases = await Case.find({
         $or: [{ leadOfficer: userId }, { assignedOfficers: userId }],
       }).select('_id');
@@ -45,7 +50,7 @@ class SearchService {
         );
         if (!isAssigned) {
           logger.warn(`[Search Security] Unauthorized search attempt by Officer ${userId} on unassigned Case ${filter.caseId}`);
-          return []; // Strictly return empty results for unassigned case
+          return []; // Strictly return empty results for unassigned case to maintain confidentiality
         }
       } else {
         filter.caseId = { $in: assignedCaseIds };
@@ -76,7 +81,7 @@ class SearchService {
       const similarity = vectorService.calculateCosineSimilarity(queryEmbedding, docVec);
       
       // Threshold check (return relevant results)
-      if (similarity > 0.15) {
+      if (similarity >= threshold) {
         // Find a relevant snippet from extractedText
         let snippet = '';
         if (doc.extractedText) {
