@@ -196,13 +196,13 @@ class ExtractionService {
 
   /**
    * Correct a single extracted field (Preserves original AI value)
-   * Only Forensic Verifier or Administrator can perform corrections
+   * Forensic Verifiers, Administrators, and Investigating Officers can perform corrections
    */
   async correctField({ documentId, fieldName, correctedValue, user }) {
-    if (![ROLES.VERIFIER, ROLES.ADMIN].includes(user.role)) {
+    if (![ROLES.VERIFIER, ROLES.ADMIN, ROLES.OFFICER].includes(user.role)) {
       throw new ApiError(
         HTTP_STATUS.FORBIDDEN,
-        `Access forbidden: Role '${user.role}' is not authorized to modify forensic extraction values. Only Verifiers and Admins may correct fields.`,
+        `Access forbidden: Role '${user.role}' is not authorized to modify forensic extraction values.`,
         ERROR_CODES.INSUFFICIENT_PERMISSIONS
       );
     }
@@ -255,7 +255,7 @@ class ExtractionService {
       },
     });
 
-    logger.info(`[Verifier Action] Field '${fieldName}' corrected for doc ${doc._id} by ${user.role} ${user.id}`);
+    logger.info(`[Field Correction] Field '${fieldName}' corrected for doc ${doc._id} by ${user.role} ${user.id}`);
 
     return doc;
   }
@@ -264,7 +264,7 @@ class ExtractionService {
    * Approve a field extraction without modification
    */
   async approveField({ documentId, fieldName, user }) {
-    if (![ROLES.VERIFIER, ROLES.ADMIN].includes(user.role)) {
+    if (![ROLES.VERIFIER, ROLES.ADMIN, ROLES.OFFICER].includes(user.role)) {
       throw new ApiError(
         HTTP_STATUS.FORBIDDEN,
         `Access forbidden: Role '${user.role}' is not authorized to approve forensic fields.`,
@@ -337,7 +337,7 @@ class ExtractionService {
    * Flag document for discrepancy, tampering, or illegibility
    */
   async flagDocument({ documentId, user, reason }) {
-    if (![ROLES.VERIFIER, ROLES.ADMIN].includes(user.role)) {
+    if (![ROLES.VERIFIER, ROLES.ADMIN, ROLES.OFFICER].includes(user.role)) {
       throw new ApiError(
         HTTP_STATUS.FORBIDDEN,
         `Access forbidden: Role '${user.role}' cannot flag legal documents.`,
@@ -384,7 +384,7 @@ class ExtractionService {
       },
     });
 
-    logger.warn(`[Tamper Flag] Document ${doc._id} flagged by verifier ${user.id}: ${reason}`);
+    logger.warn(`[Tamper Flag] Document ${doc._id} flagged by ${user.role} ${user.id}: ${reason}`);
 
     return doc;
   }
@@ -395,11 +395,13 @@ class ExtractionService {
   async getVerificationQueue({ status, priority, documentType, page = 1, limit = 20, search }) {
     const query = {};
 
-    if (status) {
+    if (status && status !== 'all') {
       query.status = status;
+    } else if (status === 'all') {
+      // no status filter
     } else {
-      // Default: documents pending review or flagged
-      query.status = { $in: [DOCUMENT_STATUS.PENDING_REVIEW, DOCUMENT_STATUS.FLAGGED_TAMPERED] };
+      // Default: show documents that are not yet certified verified, or are flagged
+      query.status = { $in: [DOCUMENT_STATUS.PENDING_REVIEW, DOCUMENT_STATUS.PENDING_OCR, DOCUMENT_STATUS.OCR_COMPLETED, DOCUMENT_STATUS.FLAGGED_TAMPERED] };
     }
 
     if (priority) {

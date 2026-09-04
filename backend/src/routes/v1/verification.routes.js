@@ -43,23 +43,23 @@ router.get(
 router.post(
   '/:id/extract',
   validateDocumentIdParam,
-  requireRole(ROLES.VERIFIER, ROLES.ADMIN),
+  requireRole(ROLES.OFFICER, ROLES.VERIFIER, ROLES.ADMIN),
   asyncWrapper(triggerExtraction)
 );
 
-// PATCH /api/v1/verification/:id/fields (Correct extracted field - Verifier / Admin only)
+// PATCH /api/v1/verification/:id/fields (Correct extracted field - Officer, Verifier, Admin)
 router.patch(
   '/:id/fields',
   validateFieldCorrection,
-  requireRole(ROLES.VERIFIER, ROLES.ADMIN),
+  requireRole(ROLES.OFFICER, ROLES.VERIFIER, ROLES.ADMIN),
   asyncWrapper(updateFieldCorrection)
 );
 
-// POST /api/v1/verification/:id/fields/approve (Approve field - Verifier / Admin only)
+// POST /api/v1/verification/:id/fields/approve (Approve field - Officer, Verifier, Admin)
 router.post(
   '/:id/fields/approve',
   validateFieldApproval,
-  requireRole(ROLES.VERIFIER, ROLES.ADMIN),
+  requireRole(ROLES.OFFICER, ROLES.VERIFIER, ROLES.ADMIN),
   asyncWrapper(approveField)
 );
 
@@ -75,7 +75,7 @@ router.post(
 router.post(
   '/:id/flag',
   validateFlagDocument,
-  requireRole(ROLES.VERIFIER, ROLES.ADMIN),
+  requireRole(ROLES.OFFICER, ROLES.VERIFIER, ROLES.ADMIN),
   asyncWrapper(flagDocument)
 );
 

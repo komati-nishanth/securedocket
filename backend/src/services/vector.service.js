@@ -9,7 +9,7 @@ class VectorService {
   constructor() {
     this.apiKey = config.gemini.apiKey || '';
     this.genAI = this.apiKey ? new GoogleGenerativeAI(this.apiKey) : null;
-    this.modelName = 'text-embedding-004';
+    this.modelName = 'gemini-embedding-001';
   }
 
   /**

@@ -27,6 +27,10 @@ export const documentService = {
     return api.get(`/documents/${id}/view`);
   },
 
+  getPresignedViewUrl: async (id) => {
+    return api.get(`/documents/${id}/view`);
+  },
+
   getDocumentDownloadUrl: async (id) => {
     return api.get(`/documents/${id}/download-url`);
   },

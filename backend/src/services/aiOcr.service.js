@@ -13,7 +13,7 @@ class AiOcrService {
   constructor() {
     this.apiKey = config.gemini.apiKey || '';
     this.genAI = this.apiKey ? new GoogleGenerativeAI(this.apiKey) : null;
-    this.modelName = 'gemini-1.5-flash';
+    this.modelName = 'gemini-2.5-flash';
   }
 
   /**
@@ -135,9 +135,10 @@ Strictly return valid JSON only.`;
         const resultPromise = model.generateContent(parts);
         const response = await Promise.race([resultPromise, timeoutPromise]);
         const responseText = response.response.text();
+        const cleanedJson = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
 
-        const parsed = JSON.parse(responseText);
-        return this._normalizeExtractionResult(parsed, 'gemini-1.5-flash');
+        const parsed = JSON.parse(cleanedJson);
+        return this._normalizeExtractionResult(parsed, 'gemini-2.5-flash');
       } catch (err) {
         lastError = err;
         if (attempt < maxRetries) {

@@ -81,9 +81,10 @@ export function DocumentReviewModal({ isOpen, onClose, document, onUpdated, user
 
   const handleOpenSecureView = async () => {
     try {
-      const res = await documentService.getPresignedViewUrl(docData._id, 'inline');
-      if (res.data?.viewUrl) {
-        window.open(res.data.viewUrl, '_blank', 'noopener,noreferrer');
+      const res = await documentService.getDocumentViewUrl(docData._id);
+      const url = res.data?.url || res.data?.viewUrl || res.url;
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
       }
     } catch (err) {
       setErrorMsg('Failed to generate 5-minute presigned streaming link: ' + (err.response?.data?.error?.message || err.message));

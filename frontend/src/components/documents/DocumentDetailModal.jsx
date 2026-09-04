@@ -79,6 +79,8 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
   if (!isOpen || !docData) return null;
 
   const isVerifierOrAdmin = user && ['verifier', 'admin'].includes(user.role);
+  const canEditFields = user && ['verifier', 'admin', 'officer'].includes(user.role);
+  const canFlag = user && ['verifier', 'admin', 'officer'].includes(user.role);
   const extractedFields = docData.extractedFields || {};
   const classification = docData.classification || {};
   const ocrMetadata = docData.ocrMetadata || {};
@@ -377,7 +379,7 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
             >
               5m Secure View
             </Button>
-            {isVerifierOrAdmin && (
+            {canEditFields && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -491,7 +493,7 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
             <div className="p-6 text-center rounded-xl bg-defense-900/40 border border-slate-800 space-y-2">
               <FileText className="w-8 h-8 text-slate-500 mx-auto" />
               <div className="text-xs text-slate-400">No structured fields extracted yet.</div>
-              {isVerifierOrAdmin && (
+              {canEditFields && (
                 <Button size="sm" variant="secondary" onClick={handleReRunExtraction} disabled={actionLoading}>
                   Run AI Extraction Pipeline
                 </Button>
@@ -600,7 +602,7 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
                         )}
                       </div>
 
-                      {isVerifierOrAdmin && !isEditing && (
+                      {canEditFields && !isEditing && (
                         <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
                           <button
                             onClick={() => handleStartFieldEdit(fieldName, fieldData.value)}
@@ -850,29 +852,33 @@ export function DocumentDetailModal({ isOpen, onClose, document, onUpdated }) {
           </div>
 
           <div className="flex items-center gap-2">
-            {isVerifierOrAdmin && !showVerifyConfirm && !showFlagModal && (
+            {!showVerifyConfirm && !showFlagModal && (
               <>
-                <Button
-                  size="sm"
-                  variant="danger"
-                  className="text-xs"
-                  onClick={() => setShowFlagModal(true)}
-                  disabled={actionLoading}
-                >
-                  <AlertTriangle className="w-3.5 h-3.5 mr-1" />
-                  Flag Anomaly
-                </Button>
+                {canFlag && (
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    className="text-xs"
+                    onClick={() => setShowFlagModal(true)}
+                    disabled={actionLoading}
+                  >
+                    <AlertTriangle className="w-3.5 h-3.5 mr-1" />
+                    Flag Anomaly
+                  </Button>
+                )}
 
-                <Button
-                  size="sm"
-                  variant="success"
-                  className="text-xs"
-                  onClick={() => setShowVerifyConfirm(true)}
-                  disabled={actionLoading || docData.status === 'verified'}
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-                  {docData.status === 'verified' ? 'Already Verified' : 'Verify & Certify'}
-                </Button>
+                {isVerifierOrAdmin && (
+                  <Button
+                    size="sm"
+                    variant="success"
+                    className="text-xs"
+                    onClick={() => setShowVerifyConfirm(true)}
+                    disabled={actionLoading || docData.status === 'verified'}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                    {docData.status === 'verified' ? 'Already Verified' : 'Verify & Certify'}
+                  </Button>
+                )}
               </>
             )}
 
